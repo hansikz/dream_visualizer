@@ -1,3 +1,4 @@
+HEAD
 # Dream Journal Visualizer
 
 Welcome to the Dream Journal Visualizer — a creative Python program that transforms your dream descriptions into vivid, interactive scenes filled with colorful shapes, patterns, and ambient sounds.
@@ -94,3 +95,7 @@ This project is licensed under the MIT License. Feel free to use, modify, and sh
 ---
 
 Thank you for checking out the Dream Journal Visualizer — may your dreams always inspire you!
+=======
+# dream_visualizer
+A Python program visualizing dreams with turtle graphics &amp; ambient sounds.
+4f958705632942294578d6fe4462b1e4f3f4c521
