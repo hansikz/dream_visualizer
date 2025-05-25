@@ -7,21 +7,19 @@ import time
 # Initialize pygame mixer for sounds
 pygame.mixer.init()
 
-# Sound files (you can replace these with your own .wav or .mp3 paths)
+# Local Sound files
 SOUNDS = {
-    "cosmic": "https://freesound.org/data/previews/505/505369_10249919-lq.mp3",   # example URL, replace with local file
-    "forest": "https://freesound.org/data/previews/208/208524_3252362-lq.mp3",
-    "galaxy": "https://freesound.org/data/previews/341/341695_62429-lq.mp3",
-    "custom": "https://freesound.org/data/previews/331/331912_3248240-lq.mp3"
+    "cosmic": "sounds/custom.wav",
+    "forest": "sounds/forest.wav",
+    "galaxy": "sounds/custom.wav",
+    "custom": "sounds/custom.wav"
 }
-
-# For this demo, you should download the sounds and put local paths here:
-# e.g. SOUNDS = { "cosmic":"sounds/cosmic.wav", ... }
 
 def play_sound_loop(scene):
     try:
-        pygame.mixer.music.load(SOUNDS.get(scene, SOUNDS['custom']))
-        pygame.mixer.music.play(-1)
+        sound_file = SOUNDS.get(scene, SOUNDS['custom'])
+        pygame.mixer.music.load(sound_file)
+        pygame.mixer.music.play(-1)  # -1 means loop indefinitely
     except Exception as e:
         print(f"Error playing sound: {e}")
 
@@ -79,7 +77,7 @@ def draw_spiral(pen, x, y, color):
         pen.forward(i * 2)
         pen.right(45)
 
-# Animated twinkling star (used in cosmic and galaxy scenes)
+# Animated twinkling star
 def twinkle_star(pen, x, y, size, colors, delay=1000):
     def twinkle():
         while True:
@@ -94,21 +92,17 @@ def twinkle_star(pen, x, y, size, colors, delay=1000):
                     pen.right(144)
                 pen.end_fill()
                 time.sleep(delay / 1000)
-    # Run in a thread so turtle mainloop is not blocked
     threading.Thread(target=twinkle, daemon=True).start()
 
-# Scenery Functions with animation
+# Scenery Functions
 def cosmic_dreamscape(pen, width, height):
     colors = ["white", "lightblue", "violet", "pink"]
-    stars = []
     for _ in range(50):
         x = random.randint(-width//2, width//2)
         y = random.randint(-height//2, height//2)
         size = random.randint(10, 25)
         color = random.choice(colors)
         draw_star(pen, x, y, size, color)
-        stars.append((x, y, size, colors))
-    # For demo, simple twinkle is skipped here because threading with turtle is tricky
 
 def forest_realm(pen, width, height):
     colors = ["darkgreen", "forestgreen", "yellow"]
@@ -144,7 +138,6 @@ def main():
     width, height = 800, 700
     screen.setup(width, height)
 
-    # User inputs using turtle dialogs
     scene = screen.textinput("Scene Choice", "Choose your dream scene (custom / cosmic / forest / galaxy):")
     if not scene:
         screen.bye()
@@ -155,10 +148,8 @@ def main():
         return
     screen.bgcolor(bg_color)
 
-    # Start sound in background thread (use local paths for sounds!)
-    def start_sound():
-        play_sound_loop(scene.lower())
-    threading.Thread(target=start_sound, daemon=True).start()
+    # Start sound in background thread
+    threading.Thread(target=lambda: play_sound_loop(scene.lower()), daemon=True).start()
 
     pen = turtle.Turtle()
     pen.speed(0)
@@ -174,8 +165,7 @@ def main():
         selected_shapes = []
         shape_quantities = {}
         for i in range(num_shapes):
-            shape_choice = screen.textinput(f"Shape {i+1}", 
-                f"Enter your {i+1} shape from: {list(shape_functions.keys())}")
+            shape_choice = screen.textinput(f"Shape {i+1}", f"Enter your {i+1} shape from: {list(shape_functions.keys())}")
             if shape_choice is None or shape_choice.lower() not in shape_functions:
                 screen.textinput("Invalid", "Invalid shape name, closing program.")
                 screen.bye()
@@ -213,7 +203,6 @@ def main():
         screen.bye()
         return
 
-    # Optional text display
     text_choice = screen.textinput("Add Text?", "Do you want to display a message? (yes/no)")
     if text_choice and text_choice.lower() == 'yes':
         dream_text = screen.textinput("Your Dream Message", "Write your message:")
